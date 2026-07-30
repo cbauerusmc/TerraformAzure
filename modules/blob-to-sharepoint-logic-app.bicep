@@ -36,6 +36,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing 
   name: storageAccountName
 }
 
+// Pre-encode at deploy time — the SharePoint connector's dataset address needs this double-encoded,
+// and the site address is a fixed deployment value, so no runtime workflow expression is needed for it.
+var encodedSharePointSiteAddress = uriComponent(uriComponent(sharePointSiteAddress))
+
 resource blobConnection 'Microsoft.Web/connections@2016-06-01' = {
   name: '${logicAppName}-azureblob'
   location: location
@@ -155,7 +159,7 @@ resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
             headers: {
               'Content-Type': 'application/octet-stream'
             }
-            path: '/datasets/@{encodeURIComponent(encodeURIComponent(sharePointSiteAddress))}/files'
+            path: '/datasets/${encodedSharePointSiteAddress}/files'
             queries: {
               folderPath: sharePointFolderPath
               name: '@triggerBody()?[\'DisplayName\']'
