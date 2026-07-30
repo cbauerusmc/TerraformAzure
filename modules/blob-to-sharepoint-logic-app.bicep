@@ -116,7 +116,7 @@ resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
               }
             }
             method: 'get'
-            path: '/v2/datasets/default/triggers/batch/onupdatedfile'
+            path: '/v2/datasets/${storageAccountName}/triggers/batch/onupdatedfile'
             queries: {
               folderId: '/${containerName}/${blobFolderPath}'
               maxFileCount: 10
@@ -135,7 +135,7 @@ resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
               }
             }
             method: 'get'
-            path: '/v2/datasets/default/files/@{encodeURIComponent(triggerBody()?[\'Id\'])}/content'
+            path: '/v2/datasets/${storageAccountName}/files/@{encodeURIComponent(triggerBody()?[\'Id\'])}/content'
             queries: {
               inferContentType: true
             }
@@ -180,7 +180,7 @@ resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
               }
             }
             method: 'delete'
-            path: '/v2/datasets/default/files/@{encodeURIComponent(triggerBody()?[\'Id\'])}'
+            path: '/v2/datasets/${storageAccountName}/files/@{encodeURIComponent(triggerBody()?[\'Id\'])}'
           }
         }
       }
