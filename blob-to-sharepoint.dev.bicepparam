@@ -5,11 +5,11 @@ param storageAccountName = 'compassusdevedw01'
 param containerName = 'sftpfiles'
 param blobFolderPath = 'commure'
 
-// TODO: replace with the actual site URL from your browser address bar (not a Graph API resource path)
-param sharePointSiteAddress = 'https://compassus0.sharepoint.com/sites/REPLACE-WITH-SITE-NAME'
+param sharePointSiteAddress = 'https://compassus0.sharepoint.com/sites/CommureFiles'
 
-// TODO: confirm exact folder path via the SharePoint connector's folder picker in Designer
-param sharePointFolderPath = '/Shared Documents/CommureFiles/General/Input'
+// Verify in the Designer's folder picker that this matches — connector may expect the
+// library's internal name here rather than the display name "Shared Documents".
+param sharePointFolderPath = '/Shared Documents/General/Input'
 
 param tags = {
   environment: 'dev'
