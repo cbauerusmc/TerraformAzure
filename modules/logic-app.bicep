@@ -53,6 +53,11 @@ resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
   }
 }
 
+resource manualTrigger 'Microsoft.Logic/workflows/triggers@2019-05-01' existing = {
+  parent: logicApp
+  name: 'manual'
+}
+
 @description('Resource ID of the Logic App.')
 output logicAppId string = logicApp.id
 
@@ -60,4 +65,4 @@ output logicAppId string = logicApp.id
 output logicAppName string = logicApp.name
 
 @description('Callback URL for the manual HTTP request trigger.')
-output httpTriggerUrl string = listCallbackUrl('${logicApp.id}/triggers/manual', '2019-05-01').value
+output httpTriggerUrl string = manualTrigger.listCallbackUrl().value
