@@ -74,6 +74,9 @@ resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
   name: logicAppName
   location: location
   tags: tags
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
     state: state
     parameters: {
@@ -189,8 +192,25 @@ resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
   }
 }
 
+// Storage Blob Data Contributor — lets the Logic App's managed identity read/write/delete blobs
+// once we switch the connection over to Azure AD auth (pending confirmation the connector supports it).
+var storageBlobDataContributorRoleId = 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+
+resource blobRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(storageAccount.id, logicApp.id, storageBlobDataContributorRoleId)
+  scope: storageAccount
+  properties: {
+    principalId: logicApp.identity.principalId
+    principalType: 'ServicePrincipal'
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', storageBlobDataContributorRoleId)
+  }
+}
+
 @description('Resource ID of the Logic App.')
 output logicAppId string = logicApp.id
+
+@description('Principal ID of the Logic App''s system-assigned managed identity.')
+output logicAppPrincipalId string = logicApp.identity.principalId
 
 @description('Resource ID of the SharePoint connection — open this in the Portal to complete the one-time OAuth sign-in.')
 output sharePointConnectionId string = sharePointConnection.id
